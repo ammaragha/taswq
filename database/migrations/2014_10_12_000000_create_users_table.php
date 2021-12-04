@@ -15,15 +15,35 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name');
+            $table->string('first_name',20);
+            $table->string('last_name',20);
+            $table->string('phone',11);
+            $table->boolean('role')->default(0);
+            $table->integer('dd')->nullable();
+            $table->integer('mm')->nullable();
+            $table->integer('yy')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
         });
+        
+     // insert Admin at start
+     DB::table('users')->insert(
+        array(
+            'email'=>'admin@admin.com',
+            'password'=>Hash::make('admin'),
+            'first_name'=>'admin',
+            'last_name'=>'admin',
+            'role'=>1,
+            'phone'=>'01061286091'
+        )
+     );
+     //----------------------------
     }
 
+   
     /**
      * Reverse the migrations.
      *
