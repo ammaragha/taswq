@@ -15,6 +15,7 @@
                     @endif
 
                     You are logged in!
+                    <a href="{{ url('dashboard/') }}" class="btn btn-primary">admin</a>
                 </div>
             </div>
         </div>
