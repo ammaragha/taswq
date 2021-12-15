@@ -37,7 +37,8 @@ class CreateUsersTable extends Migration
             'first_name'=>'admin',
             'last_name'=>'admin',
             'role'=>1,
-            'phone'=>'01061286091'
+            'phone'=>'01061286091',
+            'email_verified_at'=>  date('Y-m-d h:i:s ', time()), // to pass from verification
         )
      );
      //----------------------------

@@ -16,4 +16,9 @@ Route::get('/', function () {
     return view('backend.index');
 });
 
+Route::group(['namespace'=>'Backend'],function ()
+{
+    Route::Resource('/users','UsersController');
+});
+
 
