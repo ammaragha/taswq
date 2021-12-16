@@ -5,14 +5,15 @@
     <div class="col-md-6 m-auto stretch-card">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Add new user</h4>
+                <h4 class="card-title">Edit user</h4>
 
-                <form class="forms-sample" method="POST" action="{{ Route('users.store') }}">
+                <form class="forms-sample" method="POST" action="{{ Route('users.update', $data->id) }}">
+                    @method('PUT')
                     @csrf
                     <div class="form-group">
                         <label for="exampleInputUsername1">First name</label>
                         <input type="text" class="form-control" id="exampleInputUsername1" placeholder="" name="first_name"
-                            value="{{ old('first_name') }}">
+                            value="{{ $data->first_name }}">
 
                         @error('first_name')
                             <small class="text-danger">{{ $errors->first('first_name') }}</small>
@@ -22,7 +23,7 @@
                     <div class="form-group">
                         <label for="exampleInputUsername1">Last name</label>
                         <input type="text" class="form-control" id="exampleInputUsername1" placeholder="" name="last_name"
-                            value="{{ old('last_name') }}">
+                            value="{{ $data->last_name }}">
 
                         @error('last_name')
                             <small class="text-danger">{{ $errors->first('last_name') }}</small>
@@ -32,7 +33,7 @@
                     <div class="form-group">
                         <label for="exampleInputUsername1">Phone</label>
                         <input type="text" class="form-control" id="exampleInputUsername1" placeholder="" name="phone"
-                            value="{{ old('phone') }}">
+                            value="{{ $data->phone }}">
 
                         @error('phone')
                             <small class="text-danger">{{ $errors->first('phone') }}</small>
@@ -42,7 +43,7 @@
                     <div class="form-group">
                         <label for="exampleInputUsername1">Birthdate</label>
                         <input type="date" class="form-control" id="exampleInputUsername1" placeholder="" name="birthday"
-                            value="{{ old('birthday') }}">
+                            value="{{ $data->yy."-".$data->mm."-".$data->dd }}">
 
                         @error('birthday')
                             <small class="text-danger">{{ $errors->first('birthday') }}</small>
@@ -52,7 +53,7 @@
                     <div class="form-group">
                         <label for="exampleInputEmail1">Email address</label>
                         <input type="email" class="form-control" id="exampleInputEmail1" placeholder="" name="email"
-                            value="{{ old('email') }}">
+                            value="{{ $data->email }}">
 
                         @error('email')
                             <small class="text-danger">{{ $errors->first('email') }}</small>
@@ -77,7 +78,7 @@
                         @error('confirm_password')
                             <small class="text-danger">{{ $errors->first('confirm_password') }}</small>
                         @enderror
-                        
+
 
                     </div>
 

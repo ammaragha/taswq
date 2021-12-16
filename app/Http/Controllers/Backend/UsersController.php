@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SignUpRequest;
+use App\Http\Requests\Admin\EditUserRequest;
+use App\Http\Requests\Admin\SignUpRequest;
 use App\Http\Traits\General;
 use App\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
 {
@@ -22,7 +22,15 @@ class UsersController extends Controller
      */
     public function index()
     {
-        return view('backend.users.index');
+        //for search
+        if (isset($_GET['search'])) {
+            $data = User::where([
+                ['first_name', 'Like', "%" . $_GET['search'] . "%"],
+            ])->where('role', '0')->get();
+        } else
+            $data = User::where('role', 0)->get();
+
+        return view('backend.users.index')->with(['data' => $data]);
     }
 
     /**
@@ -43,25 +51,18 @@ class UsersController extends Controller
      */
     public function store(SignUpRequest $request)
     {
-        $birthday = $this->birthday($request->birthday);
-
         try {
-            User::create([
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'phone' => $request->phone,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'dd' => $birthday['dd'],
-                'mm' => $birthday['mm'],
-                'yy' => $birthday['yy'],
-            ]);
+            User::create($this->userRecord(
+                $request,
+                true
+            ));
 
-            Session::flash('k','User has been added');
+            Session::flash('k', 'User has been added');
         } catch (\Exception $th) {
             // return $th->getMessage();
-            Session::flash('err',"something went wrong");
+            Session::flash('err', "something went wrong");
         }
+
 
 
         return Redirect::back();
@@ -75,7 +76,16 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        //
+        $data = User::find($id);
+        if ($data){
+            if(isset($_GET['verify']) && $_GET['verify']==1){
+                $data->email_verified_at = date('Y-m-d h:i:s', time());
+                $data->save();
+                Session::flash('k',$data->email.' has been verified');
+            }
+                
+        }
+        return view('backend.users.show')->with(['data' => $data]);
     }
 
     /**
@@ -86,7 +96,11 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data = User::find($id);
+        if ($data)
+            return view('backend.users.edit')->with(['data' => $data]);
+        else
+            return Redirect::back();
     }
 
     /**
@@ -96,9 +110,40 @@ class UsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(EditUserRequest $request, $id)
     {
-        //
+        $pass = false;
+        $email = false;
+        $user = User::find($id);
+        if ($user) {
+            //-------------------------
+            if (!empty($request->password)) {
+                $pass = true;
+                $matching = Validator::make($request->all(), [
+                    'password' => 'required',
+                    'confirm_password' => 'required|required_with:password|same:password',
+                ]);
+                if ($matching->fails()) {
+                    return Redirect::back()->withErrors($matching);
+                }
+            }
+            // --------------------
+            if ($user->email != $request->email)
+                $email = true;
+            try {
+                $user->update($this->userRecord(
+                    $request,
+                    $pass,
+                    $email
+                ));
+
+                Session::flash('k', 'User has been Updated');
+            } catch (\Exception $th) {
+                // return $th->getMessage();
+                Session::flash('err', "something went wrong");
+            }
+        }
+        return Redirect::back();
     }
 
     /**
@@ -109,6 +154,13 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::find($id);
+        if ($user) {
+            $user->delete();
+            Session::flash('k', 'User has been deleted!');
+        } else {
+            Session::flash('err', 'something goes wrong!!');
+        }
+        return Redirect::back();
     }
 }

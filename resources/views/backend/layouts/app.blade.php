@@ -75,6 +75,10 @@
     <script src="{{ url('backend/js/dashboard.js') }} "></script>
     <script src="{{ url('backend/js/Chart.roundedBarCharts.js') }} "></script>
     <!-- End custom js for this page-->
+
+    <!-- my js -->
+    <script src="{{ url('backend/js/mine.js') }} "></script>
+
 </body>
 
 </html>

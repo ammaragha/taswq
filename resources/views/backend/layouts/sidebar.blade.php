@@ -21,7 +21,7 @@
                     <li class="nav-item"> <a class="nav-link" href="{{ Route('users.index') }}">show
                             all</a></li>
                     <li class="nav-item"> <a class="nav-link"
-                            href="pages/ui-features/dropdowns.html">Dropdowns</a></li>
+                            href="{{ Route('users.create') }}">Add new</a></li>
                     <li class="nav-item"> <a class="nav-link"
                             href="pages/ui-features/typography.html">Typography</a></li>
                 </ul>
