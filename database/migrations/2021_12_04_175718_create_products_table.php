@@ -26,10 +26,10 @@ class CreateProductsTable extends Migration
             $table->string('notes')->nullable();
             $table->timestamps();
 
-            $table->unsignedBigInteger('supcat_id');
+            $table->unsignedBigInteger('subcat_id');
             $table->unsignedBigInteger('brand_id');
 
-            $table->foreign('supcat_id')->references('id')->on('sup_categories');
+            $table->foreign('subcat_id')->references('id')->on('sub_categories');
             $table->foreign('brand_id')->references('id')->on('brands');
 
         });

@@ -19,6 +19,9 @@ Route::get('/', function () {
 Route::group(['namespace'=>'Backend'],function ()
 {
     Route::Resource('/users','UsersController');
+    Route::Resource('/categories','CategoriesController');
+    Route::Resource('/subcategories','SubCategoriesController');
+
 });
 
 
