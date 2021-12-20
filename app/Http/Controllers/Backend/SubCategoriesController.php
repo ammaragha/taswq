@@ -2,11 +2,21 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Category;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\SubCategoryRequest;
+use App\Http\Traits\ImageTrait;
 use Illuminate\Http\Request;
+use App\SubCategory;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 
 class SubCategoriesController extends Controller
 {
+
+    use ImageTrait;
+    public $imgPath = 'SubCategories'; // for sub-Categories images folder
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +24,15 @@ class SubCategoriesController extends Controller
      */
     public function index()
     {
-        //
+        //for search
+        if (isset($_GET['search'])) {
+            $data = SubCategory::where([
+                ['name', 'Like', "%" . $_GET['search'] . "%"],
+            ])->get();
+        } else
+            $data = SubCategory::get();
+
+        return view('backend.subcategories.index')->with(['data' => $data]);
     }
 
     /**
@@ -24,7 +42,7 @@ class SubCategoriesController extends Controller
      */
     public function create()
     {
-        //
+        return view('backend.subcategories.create');
     }
 
     /**
@@ -33,9 +51,24 @@ class SubCategoriesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SubCategoryRequest $request)
     {
-        //
+        try {
+            SubCategory::create([
+                'name' => $request->name,
+                'piority' => $request->piority,
+                'description' => $request->description,
+                'color' => $request->color,
+                'cat_id' => $request->cat_id,
+                'image' => $this->uploadImage($request->image, $this->imgPath),
+            ]);
+
+            Session::flash('k', 'Sub-Category has been added');
+        } catch (\Exception $th) {
+            Session::flash('err', 'Something wrong');
+        }
+
+        return Redirect::back();
     }
 
     /**
@@ -57,7 +90,10 @@ class SubCategoriesController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data = SubCategory::find($id);
+        if ($data)
+            return view('backend.subcategories.edit')->with(['data' => $data]);
+        return Redirect::back();
     }
 
     /**
@@ -67,9 +103,24 @@ class SubCategoriesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(SubCategoryRequest $request, $id)
     {
-        //
+        try {
+            $sub = SubCategory::find($id);
+            $sub->name = $request->name;
+            $sub->piority = $request->piority;
+            $sub->description = $request->description;
+            $sub->color = $request->color;
+            $sub->image = $this->replaceImage($sub->image, $request->image, $this->imgPath);
+
+            $sub->save();
+
+            Session::flash('k', 'Sub-category has been updated!');
+        } catch (\Exception $th) {
+            Session::flash('err', 'Something wrong');
+        }
+
+        return Redirect::back();
     }
 
     /**
@@ -80,6 +131,15 @@ class SubCategoriesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $data = SubCategory::find($id);
+            $this->delImage($data->image);
+            $data->delete();
+
+            Session::flash('k', 'Sub-Category has been deleted!');
+        } catch (\Exception $th) {
+            Session::flash('err', 'Somthing Wrong');
+        }
+        return Redirect::back();
     }
 }

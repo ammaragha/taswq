@@ -5,9 +5,11 @@ namespace App\Http\Traits;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 
-trait General
+trait UserTrait
 {
 
+
+   
     /**
      * separate birthday to small paices (yy-mm-dd)
      * @param date
@@ -54,37 +56,4 @@ trait General
     }
 
 
-    /**
-     * handle image uploading process 
-     * @param request ->image
-     * @param path on public folder
-     * @return DBpath
-     * 
-     */
-    public function uploadImage($image, $path)
-    {
-        $name = time(). '.' . $image->extension();
-        $temp = public_path('/'.$path);
-        $image->move($temp , $name);
-
-        return $path . '/' . $name;
-    }
-
-    /**
-     * replace image on editing process
-     * @param old
-     * @param image
-     * @param path
-     * 
-     * @return DBpath
-     */
-
-    public function replaceImage($old,$image, $path)
-    {
-        $old = public_path($old);
-        if(File::exists($old)){
-            File::delete($old);
-        }
-        return $this->uploadImage($image,$path);
-    }
 }

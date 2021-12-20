@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\EditUserRequest;
 use App\Http\Requests\Admin\SignUpRequest;
-use App\Http\Traits\General;
+use App\Http\Traits\UserTrait;
 use App\User;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Validator;
 class UsersController extends Controller
 {
 
-    use General;
+    use UserTrait;
     /**
      * Display a listing of the resource.
      *

@@ -3,18 +3,16 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Category;
 use App\Http\Requests\Admin\CategoryRequest;
-use App\Http\Traits\General;
-use Illuminate\Support\Facades\File;
+use App\Http\Traits\ImageTrait;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 
 class CategoriesController extends Controller
 {
-    use General;
-    public $imgPath = '/Photos/Categories'; // for Categories
+    use ImageTrait;
+    public $folderName = 'Categories'; // for Categories images folder
 
     /**
      * Display a listing of the resource.
@@ -58,7 +56,7 @@ class CategoriesController extends Controller
                 'piority' => $request->piority,
                 'description' => $request->description,
                 'color' => $request->color,
-                'image' => $this->uploadImage($request->image, $this->imgPath),
+                'image' => $this->uploadImage($request->image, $this->folderName),
             ]);
 
             Session::flash('k', 'New category has been added!');
@@ -91,6 +89,7 @@ class CategoriesController extends Controller
         if ($data) {
             return view('backend.categories.edit')->with(['data' => $data]);
         }
+        return Redirect::back();
     }
 
     /**
@@ -108,7 +107,7 @@ class CategoriesController extends Controller
             if (is_null($request->image))
                 $image = $old;
             else
-                $image = $this->replaceImage($cat->image, $request->image, $this->imgPath);
+                $image = $this->replaceImage($cat->image, $request->image, $this->folderName);
 
             //start updating
             $cat->name = $request->name;
@@ -137,7 +136,7 @@ class CategoriesController extends Controller
     {
         $data = Category::find($id);
         if($data){
-            File::delete(public_path($data->image));
+            $this->delImage($data->image);
             $data->delete();
             Session::flash('k','Category has been deleted!');
         }else{

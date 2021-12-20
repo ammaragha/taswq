@@ -3,13 +3,13 @@
 @section('content')
 
 
-    <h2 class="text-center mb-5">Show all Categories</h2>
+    <h2 class="text-center mb-5">Show all Sub-Categories</h2>
     <div class="row m-3">
 
         {{-- search bar --}}
 
         <div class="col-4 ">
-            <form action="{{ Route('categories.index') }}">
+            <form action="{{ Route('subcategories.index') }}">
                 @csrf
                 <div class="input-group">
                     <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
@@ -28,11 +28,11 @@
 
 
         {{-- add new user button --}}
-        <div class="offset-6 col-2 ">
-            <a href="{{ Route('categories.create') }}" class="btn btn btn-primary">
+        <div class="offset-5 col-3 ">
+            <a href="{{ Route('subcategories.create') }}" class="btn btn btn-primary">
                 <div class="row">
-                    <i class="icon-plus mr-2" aria-hidden="true"></i>
-                    <span class="">add new Category</span>
+                    <i class="icon-plus col-1" aria-hidden="true"></i>
+                    <span class="col-10">add new Sub-Category</span>
                 </div>
             </a>
         </div>
@@ -56,7 +56,7 @@
                                 <th>Name</th>
                                 <th>Piority</th>
                                 <th>Color</th>
-                                <th>Subs numbers</th>
+                                <th>Main Category</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -73,12 +73,12 @@
                                                 {{ $cat->color }}
                                             </div>
                                         </td>
-                                        <td>{{ App\SubCategory::number($cat->id) }}</td>
+                                        <td>{{ App\Category::getName($cat->cat_id) }}</td>
                                         <td>
-                                            <form method="POST" action="{{ Route('categories.destroy', $cat->id) }}">
+                                            <form method="POST" action="{{ Route('subcategories.destroy', $cat->id) }}">
                                                 @csrf
                                                 @method('Delete')
-                                                <a href="{{ Route('categories.edit', $cat->id) }}"
+                                                <a href="{{ Route('subcategories.edit', $cat->id) }}"
                                                     class="btn btn-sm btn-success ">
                                                     <i class="ti-marker-alt"></i>
                                                     Edit
