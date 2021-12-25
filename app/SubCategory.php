@@ -18,9 +18,14 @@ class SubCategory extends Model
         return SubCategory::max('piority')+1;
     }
 
-    static function number($cat)
+    public function cat()
     {
-        return SubCategory::where('cat_id',$cat)->count();
+        return $this->belongsTo('App\Category');
+    }
+
+    public function products()
+    {
+        return $this->hasMany('App\Product');
     }
 
 }

@@ -23,13 +23,10 @@ class Category extends Model
         return Category::max('piority')+1;
     }
 
-    static function getName($id)
+    
+
+    public function subs()
     {
-        $cat = Category::find($id);
-        if($cat){
-            return $cat->name;
-        }else{
-            return 'NOT FOUND';
-        }
+        return $this->hasMany('App\SubCategory','cat_id');
     }
 }

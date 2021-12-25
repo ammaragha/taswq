@@ -62,23 +62,23 @@
                         </thead>
                         <tbody>
                             @if (isset($data) && count($data) > 0)
-                                @foreach ($data as $key => $cat)
+                                @foreach ($data as $key => $sub)
                                     <tr>
                                         <td>{{ ++$key }}</td>
-                                        <td><img src="{{ asset($cat->image) }}"> </td>
-                                        <td>{{ $cat->name }}</td>
-                                        <td>{{ $cat->piority }}</td>
+                                        <td><img src="{{ asset($sub->image) }}"> </td>
+                                        <td>{{ $sub->name }}</td>
+                                        <td>{{ $sub->piority }}</td>
                                         <td>
-                                            <div class="btn btn-sm" style="background-color: {{ $cat->color }}">
-                                                {{ $cat->color }}
+                                            <div class="btn btn-sm" style="background-color: {{ $sub->color }}">
+                                                {{ $sub->color }}
                                             </div>
                                         </td>
-                                        <td>{{ App\Category::getName($cat->cat_id) }}</td>
+                                        <td>{{ $sub->cat->name }}</td>
                                         <td>
-                                            <form method="POST" action="{{ Route('subcategories.destroy', $cat->id) }}">
+                                            <form method="POST" action="{{ Route('subcategories.destroy', $sub->id) }}">
                                                 @csrf
                                                 @method('Delete')
-                                                <a href="{{ Route('subcategories.edit', $cat->id) }}"
+                                                <a href="{{ Route('subcategories.edit', $sub->id) }}"
                                                     class="btn btn-sm btn-success ">
                                                     <i class="ti-marker-alt"></i>
                                                     Edit

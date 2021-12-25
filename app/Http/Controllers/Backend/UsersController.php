@@ -77,15 +77,15 @@ class UsersController extends Controller
     public function show($id)
     {
         $data = User::find($id);
-        if ($data){
-            if(isset($_GET['verify']) && $_GET['verify']==1){
+        if ($data) {
+            if (isset($_GET['verify']) && $_GET['verify'] == 1) {
                 $data->email_verified_at = date('Y-m-d h:i:s', time());
                 $data->save();
-                Session::flash('k',$data->email.' has been verified');
+                Session::flash('k', $data->email . ' has been verified');
             }
-                
-        }
-        return view('backend.users.show')->with(['data' => $data]);
+            return view('backend.users.show')->with(['data' => $data]);
+        } else
+            return Redirect::to('dashboard');
     }
 
     /**

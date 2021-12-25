@@ -57,12 +57,11 @@
             </a>
             <div class="collapse" id="products">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">show
+                    <li class="nav-item"> <a class="nav-link" href="{{ Route('products.index') }}">show
                             all</a></li>
                     <li class="nav-item"> <a class="nav-link"
-                            href="pages/ui-features/dropdowns.html">Dropdowns</a></li>
-                    <li class="nav-item"> <a class="nav-link"
-                            href="pages/ui-features/typography.html">Typography</a></li>
+                            href="{{ Route('brands.index') }}">Brands</a></li>
+
                 </ul>
             </div>
         </li>

@@ -22,6 +22,17 @@ Route::group(['namespace'=>'Backend'],function ()
     Route::Resource('/categories','CategoriesController');
     Route::Resource('/subcategories','SubCategoriesController');
 
+    Route::group(['prefix'=>'/users/{user}/addresses'],function ()
+    {
+        Route::get('/create','UserAddressController@create')->name('users.addresses.create');
+        Route::post('/store','UserAddressController@store')->name('users.addresses.store');
+        Route::get('/destroy/{address}','UserAddressController@destroy')->name('users.addresses.destroy');
+
+
+    });
+
+    Route::Resource('/brands','BrandsController');
+    Route::Resource('/products','ProductsController');
 });
 
 

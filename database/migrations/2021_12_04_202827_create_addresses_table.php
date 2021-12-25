@@ -17,11 +17,16 @@ class CreateAddressesTable extends Migration
             $table->bigIncrements('id');
             $table->string('city');
             $table->string('street');
-            $table->string('lng');
-            $table->string('lat');
-            $table->string('notes');
-            $table->boolean('usability');
+            $table->string('lng')->nullable();
+            $table->string('lat')->nullable();
+            $table->string('notes')->nullable();
+            $table->boolean('usability')->default(0);
             $table->timestamps();
+
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
+
         });
     }
 

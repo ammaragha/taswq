@@ -16,9 +16,10 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
+            $table->double('price');
             $table->boolean('availability')->default(1);
             $table->integer('quantities');
-            $table->integer('sold_times')->nullable();
+            $table->integer('sold_times')->default(0);
             $table->double('discount')->nullable();
             $table->double('rating')->nullable();
             $table->string('weight')->nullable();
@@ -29,8 +30,8 @@ class CreateProductsTable extends Migration
             $table->unsignedBigInteger('subcat_id');
             $table->unsignedBigInteger('brand_id');
 
-            $table->foreign('subcat_id')->references('id')->on('sub_categories');
-            $table->foreign('brand_id')->references('id')->on('brands');
+            $table->foreign('subcat_id')->references('id')->on('sub_categories')->onDelete('cascade');
+            $table->foreign('brand_id')->references('id')->on('brands')->onDelete('cascade');
 
         });
     }
