@@ -18,6 +18,10 @@ class Category extends Model
         'name','piority','image','color','description'
     ];
 
+    protected $hidden = [
+        'created_at', 'updated_at',
+    ];
+
     static function nextPiority()
     {
         return Category::max('piority')+1;

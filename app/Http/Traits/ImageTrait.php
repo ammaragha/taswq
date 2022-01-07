@@ -26,13 +26,15 @@ trait ImageTrait
             return $this->default;
         } else {
             $path = $this->imageFolder . $folderName;
-            $name = time() . '.' . $image->extension();
+            $name = rand().time() . '.' . $image->extension();
             $temp = public_path('/' . $path);
             $image->move($temp, $name);
 
             return $path . '/' . $name;
         }
     }
+
+    
 
     /**
      * replace image on editing process

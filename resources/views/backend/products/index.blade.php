@@ -69,7 +69,7 @@
                                         title="not avilable on app"
                                 @endif>
                                 <td>{{ ++$key }}</td>
-                                <td><img src="{{ asset($product->image) }}"> </td>
+                                <td><img src="{{ asset(App\Product::mainImage($product->id)) }}"> </td>
                                 <td>{{ $product->name }}</td>
                                 <td>{{ $product->price }}</td>
                                 <td>{{ App\Product::Residual($product->id) }}</td>

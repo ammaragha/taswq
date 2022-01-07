@@ -45,7 +45,7 @@
                     <div class="form-group">
                         <label for="exampleInputSubCategory1">Piority</label>
                         <input type="number" min="1" class="form-control" id="exampleInputSubCategory1" placeholder=""
-                            name="piority" value="{{ App\SubCategory::nextPiority() }}">
+                            name="piority" value="{{ App\SubCategory::nextPiority(1) }}">
 
                         @error('piority')
                             <small class="text-danger">{{ $errors->first('piority') }}</small>

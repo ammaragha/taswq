@@ -13,13 +13,33 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
 
-Route::group(['prefix'=>'v1','namespace'=>'Api'],function ()
-{
-    Route::post('register','AuthController@register');
-    Route::post('login','AuthController@login');
+
+Route::group(['middleware' => ['json.response','api'], 'prefix' => 'v1', 'namespace' => 'Api'], function () {
+    Route::middleware('auth:api')->get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+
+    /**
+     * start Auth routes
+     */
+    Route::post('register', 'AuthController@register');
+   // Route::post('login', 'AuthController@login');
+
+
+
+    
+   /**
+    * start public routes
+    */
+    Route::get('categories','AppController@categories');
+    Route::get('categories/{id}/products','AppController@catProducts');
+    Route::get('subcategories/{main}','AppController@subCategories');
+    Route::get('subcategories/{id}/products','AppController@subcatProducts');
+    Route::get('brands','AppController@brands');
+    Route::get('brands/{id}/products','AppController@brandProducts');
+    Route::get('products/{id}','AppController@product');
+
 });

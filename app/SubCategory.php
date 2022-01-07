@@ -13,9 +13,13 @@ class SubCategory extends Model
         'name','piority','image','color','description','cat_id'
     ];
 
-    static function nextPiority()
+    protected $hidden = [
+        'created_at', 'updated_at',
+    ];
+
+    static function nextPiority($id)
     {
-        return SubCategory::max('piority')+1;
+        return SubCategory::where('cat_id',$id)->max('piority')+1;
     }
 
     public function cat()
@@ -25,7 +29,7 @@ class SubCategory extends Model
 
     public function products()
     {
-        return $this->hasMany('App\Product');
+        return $this->hasMany('App\Product','subcat_id');
     }
 
 }

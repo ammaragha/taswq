@@ -4,13 +4,21 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProductsRequest;
+use App\Http\Traits\ImageTrait;
 use App\Product;
+use App\ProductImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 
 class ProductsController extends Controller
 {
+    use ImageTrait;
+    public $folderName = 'Products/'; // for Categories images folder
+
+
+
     /**
      * Display a listing of the resource.
      *
@@ -18,6 +26,7 @@ class ProductsController extends Controller
      */
     public function index()
     {
+
         //for search
         if (isset($_GET['search'])) {
             $data = Product::where([
@@ -50,7 +59,7 @@ class ProductsController extends Controller
         if (is_null($request->availability))
             $request->availability = 0;
         try {
-            Product::create([
+            $product_id = Product::create([
                 'name' => $request->name,
                 'price' => $request->price,
                 'discount' => $request->discount,
@@ -62,11 +71,30 @@ class ProductsController extends Controller
                 'weight' => $request->weight,
                 'notes' => $request->notes
 
-            ]);
+            ])->id;
+            if ($request->hasFile('image')) {
+                ProductImage::create([
+                    'image' => $this->uploadImage($request->image, $this->folderName . $request->name),
+                    'piority' => 1,
+                    'type' => 'main',
+                    'pro_id' => $product_id
+                ]);
+            }
+
+            if ($request->hasFile('images')) {
+                foreach ($request->images as $image) {
+                    ProductImage::create([
+                        'image' => $this->uploadImage($image, $this->folderName . '/' . $request->name),
+                        'piority' => 2,
+                        'type' => 'gallary',
+                        'pro_id' => $product_id
+                    ]);
+                }
+            }
 
             Session::flash('k', 'new product has  been added');
         } catch (\Exception $th) {
-            Session::flash('err', $th->getMessage());
+            Session::flash('err','Something went wrong!');
         }
 
         return Redirect::back();
@@ -126,9 +154,9 @@ class ProductsController extends Controller
 
                 $product->save();
 
-                Session::flash('k','Product has been updated');
+                Session::flash('k', 'Product has been updated');
             } catch (\Exception $th) {
-                Session::flash('err','Something wrong');
+                Session::flash('err', 'Something wrong');
             }
             return Redirect::back();
         }
@@ -144,11 +172,12 @@ class ProductsController extends Controller
     public function destroy($id)
     {
         $data = Product::find($id);
-        if($data){
+        if ($data) {
+            File::deleteDirectory(public_path('Photos/Products/'.$data->name));
             $data->delete();
-            Session::flash('k','brand has been deleted!');
-        }else{
-            Session::flash('err','what do you do ?');
+            Session::flash('k', 'Product has been deleted!');
+        } else {
+            Session::flash('err', 'what do you do ?');
         }
 
         return Redirect::back();

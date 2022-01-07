@@ -27,6 +27,8 @@ class Kernel extends HttpKernel
 
 
 
+
+
     ];
 
     /**
@@ -36,18 +38,20 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            
+
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             // \Illuminate\Session\Middleware\AuthenticateSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
-        
+
 
         'api' => [
 
             'throttle:60,1',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            //important for forcing response into json
+            \App\Http\Middleware\ForceJsonResponse::class,
         ],
     ];
 
@@ -70,6 +74,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'admin' =>  \App\Http\Middleware\Admin::class,
+        'json.response' => \App\Http\Middleware\ForceJsonResponse::class,
 
     ];
 
@@ -88,5 +93,6 @@ class Kernel extends HttpKernel
         \Illuminate\Session\Middleware\AuthenticateSession::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
         \Illuminate\Auth\Middleware\Authorize::class,
+
     ];
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\RegisterRequest;
+use App\Http\Traits\Api\ResponseTrait;
 use App\Http\Traits\UserTrait;
 use App\User;
 use Illuminate\Http\Request;
@@ -12,7 +13,7 @@ use Auth;
 
 class AuthController extends Controller
 {
-    use UserTrait;
+    use UserTrait,ResponseTrait;
 
 
     /**
@@ -25,18 +26,11 @@ class AuthController extends Controller
     {
         try {
             $user = User::create($this->userRecord($request, true));
-            $success['token'] = $user->createToken('appToken')->accessToken;
-
-            return response()->json([
-                'success' => true,
-                'token' => $success,
-                'user' => $user
-            ]);
+            $token = $user->createToken('appToken')->accessToken;
+            $data = ['token' => $token, 'user' => $user];
+            return $this->succWithData($data);
         } catch (\Exception $th) {
-            return response()->json([
-                'Success' => false,
-                'msg' => 'Something wrong',
-            ]);
+            return $this->errMsg('something worng');
         }
     }
 
@@ -54,10 +48,11 @@ class AuthController extends Controller
 
         if (Auth::attempt($data)) {
             $user = Auth::user();
-            $success['token'] = $user->createToken('appToken')->accessToken;
+            $token = $user->createToken('Laravel Password Grant Client')->accessToken;
+            // ->createToken('appToken')->accessToken;
             return response()->json([
                 'success' => true,
-                'token' => $success,
+                'token' => $token,
                 'user' => $user
             ]);
         } else {

@@ -26,7 +26,6 @@
         {{-- end search bar --}}
 
 
-
         {{-- add new user button --}}
         <div class="offset-5 col-3 ">
             <a href="{{ Route('subcategories.create') }}" class="btn btn btn-primary">

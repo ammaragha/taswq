@@ -11,6 +11,9 @@ class Address extends Model
     protected $fillable = [
         'city','street','lng','lat','notes','usability','user_id'
     ];
+    protected $hidden = [
+        'created_at', 'updated_at',
+    ];
 
     public function user()
     {

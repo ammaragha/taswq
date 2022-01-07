@@ -30,7 +30,9 @@ class ProductsRequest extends FormRequest
             'discount' => 'nullable|numeric',
             'weight' => 'nullable|numeric',
             'subcat_id' => 'required',
-            'brand_id' => 'required'
+            'brand_id' => 'required',
+            'image' => ($this->method() == 'POST' ? 'required|' : "").'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            
         ];
     }
 }

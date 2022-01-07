@@ -11,6 +11,24 @@
                     @csrf
 
                     <div class="form-group">
+                        <label for="main">Product main image</label>
+                        <input class="form-control" type="file" id="main" name="image">
+
+                        @error('image')
+                            <small class="text-danger">{{ $errors->first('image') }}</small>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gallary">Product Gallary</label>
+                        <input class="form-control" type="file" id="gallary" name="images[]" multiple>
+
+                        @error('images')
+                            <small class="text-danger">{{ $errors->first('images') }}</small>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
                         <label for="exampleInputCategory1">Product name</label>
                         <input type="text" class="form-control" id="exampleInputCategory1" placeholder="" name="name"
                             value="{{ old('name') }}">

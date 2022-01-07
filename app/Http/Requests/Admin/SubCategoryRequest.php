@@ -27,7 +27,7 @@ class SubCategoryRequest extends FormRequest
             'name' => 'required|max:20',
             'piority' => 'required|numeric',
             'description' => 'required',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => ($this->method()== "POST"? "required|" : ""  ).'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'cat_id'=>'required|numeric'
         ];
     }
