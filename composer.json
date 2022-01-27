@@ -10,11 +10,13 @@
     "require": {
         "php": "^7.2.5|^8.0",
         "fideloper/proxy": "^4.4",
+        "google/apiclient": "^2.12",
         "laravel/framework": "^6.20.26",
         "laravel/passport": "7.5.1",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^1.2",
         "laravelcollective/html": "^6.2",
+        "nao-pon/flysystem-google-drive": "^1.1",
         "paragonie/random_compat": "2.*"
     },
     "require-dev": {

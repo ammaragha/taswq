@@ -176,6 +176,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        //google drive provider
+        App\Providers\GoogleDriveServiceProvider::class,
 
 
 

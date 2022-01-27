@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Brand;
 use App\Http\Controllers\Controller;
+use App\Http\Traits\GoogleDriveTrait;
 use App\Http\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Session;
 class BrandsController extends Controller
 {
 
-    use ImageTrait;
+    use ImageTrait,GoogleDriveTrait;
     public $folderName = 'Brands'; // for Categories images folder
 
     /**
@@ -29,7 +30,7 @@ class BrandsController extends Controller
             ])->get();
         } else
             $data = Brand::get();
-
+            
         return view('backend.brands.index')->with(['data' => $data]);
     }
 
@@ -51,15 +52,16 @@ class BrandsController extends Controller
      */
     public function store(Request $request)
     {
+
         try {
             Brand::create([
                 'name' => $request->name,
-                'image' => $this->uploadImage($request->image, $this->folderName),
+                'image' => $this->driverUpload($request->image,$this->folderName),
                 'color' => $request->color
             ]);
             Session::flash('k', 'Brand added');
         } catch (\Exception $th) {
-            Session::flash('err', 'Something wrong');
+            Session::flash('err', $th->getMessage());
         }
 
         return Redirect::back();
@@ -104,7 +106,7 @@ class BrandsController extends Controller
         if ($brand) {
             try {
                 $brand->name = $request->name;
-                $brand->image = $this->replaceImage($brand->image, $request->image, $this->folderName);
+                $brand->image = $this->driveUpdate($brand->image, $request->image, $this->folderName);
                 $brand->color = $request->color;
 
                 $brand->Save();
@@ -127,7 +129,7 @@ class BrandsController extends Controller
     {
         $data = Brand::find($id);
         if($data){
-            $this->delImage($data->image);
+            $this->driverDelete($data->image);
             $data->delete();
             Session::flash('k','brand has been deleted!');
         }else{

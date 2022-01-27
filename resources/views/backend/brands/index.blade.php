@@ -64,7 +64,7 @@
                                 @foreach ($data as $key => $brand)
                                     <tr>
                                         <td>{{ ++$key }}</td>
-                                        <td><img src="{{ asset($brand->image) }}"> </td>
+                                        <td><img src="{{ Storage::disk('google')->url($brand->image) }}"> </td>
                                         <td>{{ $brand->name }}</td>
                                         <td>
                                             <div class="btn btn-sm" style="background-color: {{ $brand->color }}">

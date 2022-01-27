@@ -5,7 +5,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Skydash Admin</title>
+    <title>Taswq</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="{{ url('backend/vendors/feather/feather.css') }} ">
     <link rel="stylesheet" href="{{ url('backend/vendors/ti-icons/css/themify-icons.css') }} ">
@@ -19,7 +19,7 @@
     <!-- inject:css -->
     <link rel="stylesheet" href="{{ url('backend/css/vertical-layout-light/style.css') }} ">
     <!-- endinject -->
-    <link rel="shortcut icon" href="{{ url('backend/images/favicon.png') }} " />
+    <link rel="shortcut icon" href="{{ asset('Photos/default.png') }} " />
 </head>
 
 <body>

@@ -42,4 +42,11 @@ Route::group(['middleware' => ['json.response','api'], 'prefix' => 'v1', 'namesp
     Route::get('brands/{id}/products','AppController@brandProducts');
     Route::get('products/{id}','AppController@product');
 
+    /**
+     * Start Trades 
+     */
+    Route::group(['middleware'=>'auth:api'],function ()
+    {
+        Route::post('cart/create','CartController@create');
+    });
 });
