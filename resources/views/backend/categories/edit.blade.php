@@ -5,7 +5,7 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">
-                    <img style="width: 36px;height: 36px;border-radius: 100%;" src="{{ asset($data->image) }}">
+                    <img style="width: 36px;height: 36px;border-radius: 100%;" src="{{ Storage::disk('google')->url($data->image) }}">
                     Edit {{ $data->name }}
                 </h4>
 

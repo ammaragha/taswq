@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProductsRequest;
-use App\Http\Traits\ImageTrait;
+use App\Http\Traits\GoogleDriveTrait;
 use App\Product;
 use App\ProductImage;
 use Illuminate\Http\Request;
@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Session;
 
 class ProductsController extends Controller
 {
-    use ImageTrait;
-    public $folderName = 'Products/'; // for Categories images folder
+    use GoogleDriveTrait;
+    public $folderName = 'Products'; // for Categories images folder
 
 
 
@@ -72,9 +72,11 @@ class ProductsController extends Controller
                 'notes' => $request->notes
 
             ])->id;
+
+            $folder = $request->name . rand(); // to avoid th conflict
             if ($request->hasFile('image')) {
                 ProductImage::create([
-                    'image' => $this->uploadImage($request->image, $this->folderName . $request->name),
+                    'image' => $this->driveUpload($request->image, $folder, $this->folderName),
                     'piority' => 1,
                     'type' => 'main',
                     'pro_id' => $product_id
@@ -84,7 +86,7 @@ class ProductsController extends Controller
             if ($request->hasFile('images')) {
                 foreach ($request->images as $image) {
                     ProductImage::create([
-                        'image' => $this->uploadImage($image, $this->folderName . '/' . $request->name),
+                        'image' => $this->driveUpload($image, $folder, $this->folderName),
                         'piority' => 2,
                         'type' => 'gallary',
                         'pro_id' => $product_id
@@ -94,7 +96,7 @@ class ProductsController extends Controller
 
             Session::flash('k', 'new product has  been added');
         } catch (\Exception $th) {
-            Session::flash('err','Something went wrong!');
+            Session::flash('err', "something went wrong");
         }
 
         return Redirect::back();
@@ -173,7 +175,7 @@ class ProductsController extends Controller
     {
         $data = Product::find($id);
         if ($data) {
-            File::deleteDirectory(public_path('Photos/Products/'.$data->name));
+            $this->deleteDir($data->images->where('type','main')->first()->image,1); //get full path to delete folder
             $data->delete();
             Session::flash('k', 'Product has been deleted!');
         } else {

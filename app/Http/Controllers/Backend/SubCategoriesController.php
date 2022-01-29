@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SubCategoryRequest;
-use App\Http\Traits\ImageTrait;
+use App\Http\Traits\GoogleDriveTrait;
 use Illuminate\Http\Request;
 use App\SubCategory;
 use Illuminate\Support\Facades\Redirect;
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Session;
 class SubCategoriesController extends Controller
 {
 
-    use ImageTrait;
+    use GoogleDriveTrait;
     public $imgPath = 'SubCategories'; // for sub-Categories images folder
 
     /**
@@ -60,7 +60,7 @@ class SubCategoriesController extends Controller
                 'description' => $request->description,
                 'color' => $request->color,
                 'cat_id' => $request->cat_id,
-                'image' => $this->uploadImage($request->image, $this->imgPath),
+                'image' => $this->driveUpload($request->image, $this->imgPath),
             ]);
 
             Session::flash('k', 'Sub-Category has been added');
@@ -111,7 +111,7 @@ class SubCategoriesController extends Controller
             $sub->piority = $request->piority;
             $sub->description = $request->description;
             $sub->color = $request->color;
-            $sub->image = $this->replaceImage($sub->image, $request->image, $this->imgPath);
+            $sub->image = $this->driveUpdate($sub->image, $request->image, $this->imgPath);
 
             $sub->save();
 
@@ -133,7 +133,7 @@ class SubCategoriesController extends Controller
     {
         try {
             $data = SubCategory::find($id);
-            $this->delImage($data->image);
+            $this->driveDelete($data->image);
             $data->delete();
 
             Session::flash('k', 'Sub-Category has been deleted!');

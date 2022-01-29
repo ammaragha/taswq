@@ -56,7 +56,7 @@ class BrandsController extends Controller
         try {
             Brand::create([
                 'name' => $request->name,
-                'image' => $this->driverUpload($request->image,$this->folderName),
+                'image' => $this->driveUpload($request->image,$this->folderName),
                 'color' => $request->color
             ]);
             Session::flash('k', 'Brand added');
@@ -129,7 +129,7 @@ class BrandsController extends Controller
     {
         $data = Brand::find($id);
         if($data){
-            $this->driverDelete($data->image);
+            $this->driveDelete($data->image);
             $data->delete();
             Session::flash('k','brand has been deleted!');
         }else{

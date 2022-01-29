@@ -5,13 +5,13 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Category;
 use App\Http\Requests\Admin\CategoryRequest;
-use App\Http\Traits\ImageTrait;
+use App\Http\Traits\GoogleDriveTrait;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 
 class CategoriesController extends Controller
 {
-    use ImageTrait;
+    use GoogleDriveTrait;
     public $folderName = 'Categories'; // for Categories images folder
 
     /**
@@ -56,12 +56,12 @@ class CategoriesController extends Controller
                 'piority' => $request->piority,
                 'description' => $request->description,
                 'color' => $request->color,
-                'image' => $this->uploadImage($request->image, $this->folderName),
+                'image' => $this->driveUpload($request->image, $this->folderName),
             ]);
 
             Session::flash('k', 'New category has been added!');
         } catch (\Exception $th) {
-            Session::flash('err', 'Something went wrong!');
+            Session::flash('err', 'Something went wrong!' . $th->getMessage());
         }
         return Redirect::back();
     }
@@ -107,7 +107,7 @@ class CategoriesController extends Controller
             if (is_null($request->image))
                 $image = $old;
             else
-                $image = $this->replaceImage($cat->image, $request->image, $this->folderName);
+                $image = $this->driveUpdate($cat->image, $request->image, $this->folderName);
 
             //start updating
             $cat->name = $request->name;
@@ -136,7 +136,7 @@ class CategoriesController extends Controller
     {
         $data = Category::find($id);
         if($data){
-            $this->delImage($data->image);
+            $this->driveDelete($data->image);
             $data->delete();
             Session::flash('k','Category has been deleted!');
         }else{

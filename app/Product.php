@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -33,7 +34,8 @@ class Product extends Model
      */
     static function mainImage($id)
     {
-        return Product::find($id)->images()->where('type','main')->first()->image;
+        $img = Product::find($id)->images()->where('type','main')->first()->image;
+        return Storage::disk('google')->url($img);
     }
 
     static function Residual($id)

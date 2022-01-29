@@ -65,7 +65,7 @@
                                 @foreach ($data as $key => $cat)
                                     <tr>
                                         <td>{{ ++$key }}</td>
-                                        <td><img src="{{ asset($cat->image) }}"> </td>
+                                        <td><img src="{{ Storage::disk('google')->url($cat->image) }}"> </td>
                                         <td>{{ $cat->name }}</td>
                                         <td>{{ $cat->piority }}</td>
                                         <td>
