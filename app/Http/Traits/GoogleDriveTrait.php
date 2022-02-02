@@ -87,14 +87,44 @@ trait GoogleDriveTrait
      * @param int degree
      * @return boolean
      */
-    public function deleteDir($dir,$degree = 0)
+    public function deleteDir($dir, $degree = 0)
     {
-        $dir = array_reverse(explode('/',$dir)); //exploade and reverse
-        if($degree >= count($dir)) //if degree more than length
-            $degree = count($dir)-1;
+        $dir = array_reverse(explode('/', $dir)); //exploade and reverse
+        if ($degree >= count($dir)) //if degree more than length
+            $degree = count($dir) - 1;
         return $this->drive()->deleteDirectory($dir[$degree]); //delete depend on degree
     }
     //-------------------------------------------------------------------------------------
+
+
+    /**
+     * return back directory id
+     * @param string $folder
+     * @param string $parent
+     * @return id
+     */
+    public function dirID($folder, $parent)
+    {
+        if (!is_null($parent))
+            $dirId = $this->makeSubDir($parent, $folder); //create subDir
+        else
+            $dirId = $this->makeDir($folder); //create Dir
+
+        return $dirId;
+    }
+
+    /**
+     * store to drive and return back with id
+     * @param Request $file
+     * @param id $dir
+     * @return id
+     */
+    public function driveStore($file,$dir)
+    {
+        $file = $file->store($dir, 'google'); // Store file
+        $fileId = $this->getId($file);
+        return $dir . '/' . $fileId;
+    }
 
     /**
      * to upload file to drive
@@ -104,15 +134,9 @@ trait GoogleDriveTrait
      */
     public function driveUpload($file, $folder, $parent = null)
     {
-        if (!is_null($parent))
-            $dirId = $this->makeSubDir($parent, $folder); //create subDir
-        else
-            $dirId = $this->makeDir($folder); //create Dir
-
-
-        $temp = $file->store($dirId, 'google'); // Store file
-        $fileId = $this->getId($temp);
-        return $dirId . '/' . $fileId;
+        $dirId = $this->dirID($folder, $parent);
+        return $this->driveStore($file,$dirId);
+        
     }
 
     /**

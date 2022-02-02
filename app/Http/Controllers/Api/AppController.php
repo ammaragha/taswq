@@ -6,13 +6,15 @@ use App\Brand;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\Api\ResponseTrait;
 use App\Category;
+use App\Http\Traits\Api\MapResponseTrait;
+use App\Http\Traits\PaginationTrait;
 use App\Product;
 use App\SubCategory;
-use Illuminate\Http\Request;
+
 
 class AppController extends Controller
 {
-    use ResponseTrait;
+    use ResponseTrait, MapResponseTrait, PaginationTrait;
 
 
     /**
@@ -21,8 +23,10 @@ class AppController extends Controller
      */
     public function categories()
     {
-        $cats = Category::orderBy('piority','ASC')->get();
-        $data = ['categories'=>$cats];
+        $cats = Category::orderBy('piority', 'ASC')->get();
+        $cats = $this->mapCategories($cats);
+        $cats = $this->paginate($cats);
+        $data = ['categories' => $cats];
         return $this->succWithData($data);
     }
 
@@ -33,15 +37,17 @@ class AppController extends Controller
      */
     public function catProducts($id)
     {
-        $ids=[];
-        $subcats = Category::find($id)->subs()->get('id');
-        foreach($subcats as $sub){
-            array_push($ids,$sub->id);
+        $ids = [];
+        $subcats = Category::find($id)->subs()->get('id'); // back to here again idiot <----------------
+        foreach ($subcats as $sub) {
+            array_push($ids, $sub->id);
         }
-        $products = Product::whereIn('subcat_id',$ids)->with('images')->where('availability',1)->get();
-        $data = ['products'=>$products];
+        $products = Product::whereIn('subcat_id', $ids)->with('images')->where('availability', 1)->get();
+        $products = $this->mapProducts($products);
+        $products = $this->paginate($products);
+        $data = ['products' => $products];
         return $this->succWithData($data);
-      }
+    }
 
 
     /**
@@ -51,8 +57,10 @@ class AppController extends Controller
      */
     public function subcategories($main)
     {
-        $subcats = SubCategory::orderBy('piority','ASC')->where('cat_id',$main)->get();
-        $data = ['subcategories'=>$subcats];
+        $subcats = SubCategory::orderBy('piority', 'ASC')->where('cat_id', $main)->get();
+        $subcats = $this->mapSubs($subcats);
+        $subcats = $this->paginate($subcats);
+        $data = ['subcategories' => $subcats];
         return $this->succWithData($data);
     }
 
@@ -63,8 +71,10 @@ class AppController extends Controller
      */
     public function subcatProducts($id)
     {
-        $products = SubCategory::find($id)->products()->with('images')->where('availability',1)->get();
-        $data = ['products'=>$products];
+        $products = SubCategory::find($id)->products()->with('images')->where('availability', 1)->get();
+        $products = $this->mapProducts($products);
+        $products = $this->paginate($products);
+        $data = ['products' => $products];
         return $this->succWithData($data);
     }
 
@@ -75,7 +85,9 @@ class AppController extends Controller
     public function brands()
     {
         $brands = Brand::get();
-        $data = ['Brands'=>$brands];
+        $brands = $this->mapBrands($brands);
+        $brands = $this->paginate($brands, 2);
+        $data = ['Brands' => $brands];
         return $this->succWithData($data);
     }
 
@@ -86,8 +98,10 @@ class AppController extends Controller
      */
     public function brandProducts($id)
     {
-        $products = Brand::find($id)->products()->with('images')->where('availability',1)->get();
-        $data = ['products'=>$products];
+        $products = Brand::find($id)->products()->with('images')->where('availability', 1)->get();
+        $products = $this->mapProducts($products);
+        $products = $this->paginate($products);
+        $data = ['products' => $products];
         return $this->succWithData($data);
     }
 
@@ -98,9 +112,10 @@ class AppController extends Controller
      */
     public function product($id)
     {
-        $product = Product::find($id)->with('images')->get();
-        
-        $data = ['product'=>$product];
+        $product = Product::where('id',$id)->with('images')->get();
+        //dd($product);
+        $product = $this->mapProducts($product, true);
+        $data = ['product' => $product];
         return $this->succWithData($data);
     }
 }

@@ -48,5 +48,9 @@ Route::group(['middleware' => ['json.response','api'], 'prefix' => 'v1', 'namesp
     Route::group(['middleware'=>'auth:api'],function ()
     {
         Route::post('cart/create','CartController@create');
+        Route::post('cart/{id}/add','CartController@add');
+        Route::get('cart/{id}','CartController@view');
+        Route::post('cart/{id}/remove','CartController@remove');
+
     });
 });

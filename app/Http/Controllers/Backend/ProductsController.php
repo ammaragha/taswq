@@ -5,16 +5,15 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProductsRequest;
 use App\Http\Traits\GoogleDriveTrait;
+use App\Http\Traits\ProductsTrait;
 use App\Product;
 use App\ProductImage;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 
 class ProductsController extends Controller
 {
-    use GoogleDriveTrait;
+    use GoogleDriveTrait,ProductsTrait;
     public $folderName = 'Products'; // for Categories images folder
 
 
@@ -75,23 +74,11 @@ class ProductsController extends Controller
 
             $folder = $request->name . rand(); // to avoid th conflict
             if ($request->hasFile('image')) {
-                ProductImage::create([
-                    'image' => $this->driveUpload($request->image, $folder, $this->folderName),
-                    'piority' => 1,
-                    'type' => 'main',
-                    'pro_id' => $product_id
-                ]);
+                $this->uploadMain($request->image,$folder,$this->folderName,$product_id);
             }
 
             if ($request->hasFile('images')) {
-                foreach ($request->images as $image) {
-                    ProductImage::create([
-                        'image' => $this->driveUpload($image, $folder, $this->folderName),
-                        'piority' => 2,
-                        'type' => 'gallary',
-                        'pro_id' => $product_id
-                    ]);
-                }
+                $this->uploadGallary($request->image,$folder,$this->folderName,$product_id);
             }
 
             Session::flash('k', 'new product has  been added');

@@ -70,7 +70,7 @@
                                 @endif>
                                 <td>{{ ++$key }}</td>
                                 <td><img src="{{ asset(App\Product::mainImage($product->id)) }}"> </td>
-                                <td>{{ $product->name }}</td>
+                                <td><a href="{{ Route('products.show',$product->id) }}">{{ $product->name }}</a></td>
                                 <td>{{ $product->price }}</td>
                                 <td>{{ App\Product::Residual($product->id) }}</td>
                                 <td>{{ $product->brand->name }}</td>
