@@ -7,6 +7,7 @@ use App\CartProduct;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\Api\MapResponseTrait;
 use App\Http\Traits\Api\ResponseTrait;
+use App\Http\Traits\CartsTrait;
 use App\Http\Traits\PaginationTrait;
 use App\Product;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ use Auth;
 class CartController extends Controller
 {
 
-    use ResponseTrait, MapResponseTrait, PaginationTrait;
+    use ResponseTrait, MapResponseTrait, PaginationTrait,CartsTrait;
 
 
     /**
@@ -26,66 +27,75 @@ class CartController extends Controller
     {
         $id = Auth::user()->id;
         try {
-            $cart = Cart::where('user_id', $id)->latest()->first();
-            if ($cart && $cart->status == 0) {
+            $cart = $this->getOpenCart(); // get last cart for user
+            if (!$cart) { // check if cart on hold or already complated 
                 $cart = Cart::create([
                     'user_id' => $id,
                 ]);
             }
-            $data = ['cart_id' => $cart->id];
+            $data = ['cart_id' => $cart->id]; //return  useable cart
             return $this->succWithData($data, 'cart on hold');
         } catch (\Exception $th) {
-            return $this->errMsg('nope');
+            return $this->errMsg($th->getMessage());
         }
     }
 
-    public function add(Request $request, $id)
+    public function add(Request $request)
     {
-        $cart = Cart::find($id);
-        $product = Product::find($request->proId);
-        if ($cart && $product) {
-            CartProduct::create([
-                'pro_id' => $product->id,
-                'cart_id' => $cart->id,
-                'quantity' => $request->quantity,
-                'total_price' => $request->quantity * $product->price
-            ]);
+        $pro_id = $request->proId;
+        $cart = $this->getOpenCart();
+        $product = Product::find($pro_id); // back to here again need to check availability
+        if ($cart && $product && $product->availability == 1) {
+
+            $proInCart = $this->proInCart($cart->id, $pro_id);
+            if ($proInCart->first())
+                $this->modifyPro($cart, $product, $request);
+            else
+                $this->newPro($cart, $product, $request);
+
 
             return $this->succMsg('Done');
         }
-        return $this->errMsg('Something wrong with your request');
+        return $this->errMsg('Something wrong with your request or Product not available');
     }
 
-    public function view($id)
+    public function view()
     {
-        $cart = Cart::find($id);
-        $ress = [];
-        if ($cart && $cart->status == 1) {
-            foreach ($cart->products as $product) {
-                $item = $product->item;
-                $product = Product::where('id', $item->pro_id)->with('images')->get();
-                $product = $this->mapProducts($product);
-                array_push($ress, [
+        $cart = $this->getOpenCart();
+        $ress = []; //result 
+        if ($cart) { // check the cart 
+            foreach ($cart->products as $product) { //loop into all products
+                $item = $product->item; // pivot
+                $product = Product::where('id', $item->pro_id)->with('images')->get(); //bring products
+                $product = $this->mapProducts($product); //mapping them
+                array_push($ress, [ // push them to result
                     'product' => $product,
                     'quantity' => $item->quantity,
                     'price' => $item->total_price
                 ]);
             }
-            $ress = $this->paginate($ress,5);
+            $ress = $this->paginate($ress, 5); //paginating them
             return $this->succWithData($ress);
         }
         return $this->errMsg('This cart unavilable');
     }
 
 
-    public function remove(Request $request,$id)
+    public function remove(Request $request)
     {
+        $cart = $this->getOpenCart();
         $pro_id = $request->proId;
-        $cartProdut = CartProduct::where('cart_id',$id)->where('pro_id',$pro_id);
-        if($cartProdut->first()){
+        $cartProdut = $this->proInCart($cart->id, $pro_id);
+        if ($cartProdut->first()) {
             $cartProdut->delete();
             return $this->succMsg('removed');
         }
         return $this->errMsg('maybe product not exist or cart');
     }
+
+
+
+
+
+   
 }

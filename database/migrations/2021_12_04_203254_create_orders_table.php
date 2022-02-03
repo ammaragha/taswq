@@ -19,13 +19,14 @@ class CreateOrdersTable extends Migration
             $table->date('arrival');
             $table->enum('status',['shipped','out']);
             $table->double('discount')->nullable();
+            $table->double('total_price');
             $table->timestamps();
 
             $table->unsignedBigInteger('address_id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('cart_id');
 
             $table->foreign('address_id')->references('id')->on('addresses');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('cart_id')->references('id')->on('carts');
         });
     }
 

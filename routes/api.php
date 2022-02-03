@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 
 
 
-Route::group(['middleware' => ['json.response','api'], 'prefix' => 'v1', 'namespace' => 'Api'], function () {
+Route::group(['middleware' => ['json.response', 'api'], 'prefix' => 'v1', 'namespace' => 'Api'], function () {
     Route::middleware('auth:api')->get('/user', function (Request $request) {
         return $request->user();
     });
@@ -26,31 +26,47 @@ Route::group(['middleware' => ['json.response','api'], 'prefix' => 'v1', 'namesp
      * start Auth routes
      */
     Route::post('register', 'AuthController@register');
-   // Route::post('login', 'AuthController@login');
+    // Route::post('login', 'AuthController@login');
 
 
 
-    
-   /**
-    * start public routes
-    */
-    Route::get('categories','AppController@categories');
-    Route::get('categories/{id}/products','AppController@catProducts');
-    Route::get('subcategories/{main}','AppController@subCategories');
-    Route::get('subcategories/{id}/products','AppController@subcatProducts');
-    Route::get('brands','AppController@brands');
-    Route::get('brands/{id}/products','AppController@brandProducts');
-    Route::get('products/{id}','AppController@product');
+
+    /**
+     * start public routes
+     */
+    Route::get('categories', 'AppController@categories');
+    Route::get('categories/{id}/products', 'AppController@catProducts');
+    Route::get('subcategories/{main}', 'AppController@subCategories');
+    Route::get('subcategories/{id}/products', 'AppController@subcatProducts');
+    Route::get('brands', 'AppController@brands');
+    Route::get('brands/{id}/products', 'AppController@brandProducts');
+    Route::get('products/{id}', 'AppController@product');
 
     /**
      * Start Trades 
      */
-    Route::group(['middleware'=>'auth:api'],function ()
-    {
-        Route::post('cart/create','CartController@create');
-        Route::post('cart/{id}/add','CartController@add');
-        Route::get('cart/{id}','CartController@view');
-        Route::post('cart/{id}/remove','CartController@remove');
+    Route::group(['middleware' => 'auth:api'], function () {
 
+
+        /**
+         * Start User Info
+         */
+        Route::get('address','AddressController@view');
+        Route::post('address/create','AddressController@create');
+        Route::post('address/{id}/use','AddressController@usability');
+        Route::post('address/{id}/destroy','AddressController@destroy');
+
+        /**
+         * Start Trades 
+         */
+
+         //carts
+        Route::post('cart/create', 'CartController@create');
+        Route::post('cart/add', 'CartController@add');
+        Route::get('cart/', 'CartController@view');
+        Route::post('cart/remove', 'CartController@remove');
+
+        //orders
+        Route::post('order','OrderController@order');
     });
 });
