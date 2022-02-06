@@ -19,4 +19,15 @@ class Cart extends Model
             ->withPivot('quantity', 'total_price')
             ->as('item');
     }
+
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
+
+    public function order()
+    {
+        return $this->hasOne('App\Order');
+    }
 }

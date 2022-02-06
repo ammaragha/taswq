@@ -13,8 +13,8 @@ class Order extends Model
     ];
 
 
-    public function users()
+    public function cart()
     {
-        return $this->belongsToMany('App\User','user_orders','order_id','user_id');
+        return $this->belongsTo('App\Cart','cart_id');
     }
 }

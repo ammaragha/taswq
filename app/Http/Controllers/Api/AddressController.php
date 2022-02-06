@@ -41,8 +41,10 @@ class AddressController extends Controller
         }
     }
 
-    public function usability($id)
+    public function usability(Request $request)
     {
+        $id = $request->id;
+
         try {
             Address::where('user_id', Auth::user()->id)->update([ //turn off all addresses
                 'usability' => 0
@@ -50,14 +52,22 @@ class AddressController extends Controller
             $data = $this->checkAddress($id)->update([ // turn on this one
                 'usability' => 1
             ]);
+
+            if(!$data)
+                return $this->errMsg('no address or invalid data');
+
+                
             return $this->succMsg('This address is now on use');
         } catch (\Exception $th) {
             return $this->errMsg('something wrong');
         }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
+        $id = $request->id;
+        if (!$id)
+            return $this->errMsg('Where is the address?');
         try {
             $address = $this->checkAddress($id)->delete();
             if ($address)

@@ -51,22 +51,22 @@ Route::group(['middleware' => ['json.response', 'api'], 'prefix' => 'v1', 'names
         /**
          * Start User Info
          */
-        Route::get('address','AddressController@view');
-        Route::post('address/create','AddressController@create');
-        Route::post('address/{id}/use','AddressController@usability');
-        Route::post('address/{id}/destroy','AddressController@destroy');
+        Route::get('address', 'AddressController@view');
+        Route::post('address/create', 'AddressController@create');
+        Route::post('address/use', 'AddressController@usability');
+        Route::post('address/destroy', 'AddressController@destroy');
 
         /**
          * Start Trades 
          */
 
-         //carts
+        //carts
+        Route::get('cart/', 'CartController@view');
         Route::post('cart/create', 'CartController@create');
         Route::post('cart/add', 'CartController@add');
-        Route::get('cart/', 'CartController@view');
         Route::post('cart/remove', 'CartController@remove');
 
         //orders
-        Route::post('order','OrderController@order');
+        Route::post('order', 'OrderController@order');
     });
 });

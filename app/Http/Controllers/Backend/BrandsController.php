@@ -27,9 +27,9 @@ class BrandsController extends Controller
         if (isset($_GET['search'])) {
             $data = Brand::where([
                 ['name', 'Like', "%" . $_GET['search'] . "%"],
-            ])->get();
+            ])->paginate(5);
         } else
-            $data = Brand::get();
+            $data = Brand::paginate(5);
             
         return view('backend.brands.index')->with(['data' => $data]);
     }

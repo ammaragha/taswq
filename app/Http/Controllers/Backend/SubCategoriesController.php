@@ -28,9 +28,9 @@ class SubCategoriesController extends Controller
         if (isset($_GET['search'])) {
             $data = SubCategory::where([
                 ['name', 'Like', "%" . $_GET['search'] . "%"],
-            ])->get();
+            ])->paginate(5);
         } else
-            $data = SubCategory::get();
+            $data = SubCategory::paginate(5);
 
         return view('backend.subcategories.index')->with(['data' => $data]);
     }

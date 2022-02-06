@@ -26,9 +26,9 @@ class UsersController extends Controller
         if (isset($_GET['search'])) {
             $data = User::where([
                 ['first_name', 'Like', "%" . $_GET['search'] . "%"],
-            ])->where('role', '0')->get();
+            ])->where('role', '0')->paginate(5);
         } else
-            $data = User::where('role', 0)->get();
+            $data = User::where('role', 0)->paginate(5);
 
         return view('backend.users.index')->with(['data' => $data]);
     }

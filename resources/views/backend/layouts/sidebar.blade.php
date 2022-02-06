@@ -36,6 +36,15 @@
         </li>
         {{-- end nav categories --}}
 
+        {{-- nav brands --}}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ Route('brands.index') }}">
+                <i class="icon-tag menu-icon"></i>
+                <span class="menu-title">Brands</span>
+            </a>
+        </li>
+        {{-- end nav brands --}}
+
         {{-- nav products --}}
         <li class="nav-item">
             <a class="nav-link" href="{{ Route('products.index') }}">
@@ -45,14 +54,14 @@
         </li>
         {{-- end nav products --}}
 
-        {{-- nav brands --}}
+        {{-- nav orders --}}
         <li class="nav-item">
-            <a class="nav-link" href="{{ Route('brands.index') }}">
+            <a class="nav-link" href="{{ Route('orders.index') }}">
                 <i class="icon-clipboard menu-icon"></i>
-                <span class="menu-title">Brands</span>
+                <span class="menu-title">Orders</span>
             </a>
         </li>
-        {{-- end nav brands --}}
+        {{-- end nav orders --}}
 
     </ul>
 </nav>

@@ -33,6 +33,13 @@ Route::group(['namespace'=>'Backend'],function ()
 
     Route::Resource('/brands','BrandsController');
     Route::Resource('/products','ProductsController');
+
+    /**
+     * Orders
+     */
+    Route::get('/orders','OrdersController@index')->name('orders.index');
+
+
 });
 
 

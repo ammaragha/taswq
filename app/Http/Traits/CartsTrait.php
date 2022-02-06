@@ -17,7 +17,10 @@ trait CartsTrait
     public function getOpenCart()
     {
         $id = Auth::user()->id;
-        return Cart::where('user_id', $id)->where('status',1)->latest()->first();
+        $cart = Cart::where('user_id', $id)->where('status',1)->latest()->first();
+        if(!$cart)
+            return false;
+        return $cart;
     }
 
     /**

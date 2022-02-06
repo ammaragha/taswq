@@ -30,9 +30,9 @@ class ProductsController extends Controller
         if (isset($_GET['search'])) {
             $data = Product::where([
                 ['name', 'Like', "%" . $_GET['search'] . "%"],
-            ])->get();
+            ])->paginate(5);
         } else
-            $data = Product::get();
+            $data = Product::paginate(5);
 
         return view('backend.products.index')->with(['data' => $data]);
     }
@@ -78,7 +78,7 @@ class ProductsController extends Controller
             }
 
             if ($request->hasFile('images')) {
-                $this->uploadGallary($request->image,$folder,$this->folderName,$product_id);
+                $this->uploadGallary($request->images,$folder,$this->folderName,$product_id);
             }
 
             Session::flash('k', 'new product has  been added');
