@@ -61,6 +61,6 @@ class Product extends Model
 
     public function carts()
     {
-        return $this->belongsToMany('App\cart','cart_products','pro_id','cart_id')->withPivot('quantity', 'total_price');
+        return $this->belongsToMany('App\cart','cart_products','pro_id','cart_id')->withPivot('quantity');
     }
 }

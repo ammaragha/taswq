@@ -7,15 +7,15 @@ use App\CartProduct;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\Api\ResponseTrait;
 use App\Http\Traits\CartsTrait;
+use App\Http\Traits\OrdersTrait;
 use App\Order;
-use App\UserOrder;
 use Illuminate\Http\Request;
 use Auth;
 
 class OrderController extends Controller
 {
 
-    use ResponseTrait, CartsTrait;
+    use ResponseTrait, CartsTrait,OrdersTrait;
 
     public function order()
     {
@@ -29,7 +29,7 @@ class OrderController extends Controller
 
         $cartProducts = CartProduct::where('cart_id', $cart_id); //hold all cart products
 
-        if (!$cartProducts) //if no products
+        if (!$cartProducts->first()) //if no products
             return $this->errMsg('Cart Empty idiot');
 
         //some info
@@ -37,9 +37,12 @@ class OrderController extends Controller
         if (!$address_id)
             return $this->errMsg('No address to send to it');
 
-        $total_price = $cartProducts->sum('total_price'); //sum of all products price
+        
+        $total_price = $this->totalPrice($cart_id); //sum of all products price
         $start = '2022-02-03';
         $arival = '2022-02-03';
+
+       
 
         try {
             $data = Order::create([

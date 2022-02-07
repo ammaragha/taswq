@@ -71,7 +71,6 @@ class CartController extends Controller
                 array_push($ress, [ // push them to result
                     'product' => $product,
                     'quantity' => $item->quantity,
-                    'price' => $item->total_price
                 ]);
             }
             $ress = $this->paginate($ress, 5); //paginating them
