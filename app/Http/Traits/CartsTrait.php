@@ -102,4 +102,21 @@ trait CartsTrait
         }
         return true;
     }
+
+
+    /**
+     * Refund Cart
+     * @param id $cart_id
+     * @return void
+     */
+    public function refundCart($cart_id)
+    {
+        $products = Cart::find($cart_id)->products;
+        foreach($products as $product){
+            $quantity = $product->item->quantity;
+            $product->update([
+                'quantities'=> $product->quantities + $quantity
+            ]);
+        }
+    }
 }

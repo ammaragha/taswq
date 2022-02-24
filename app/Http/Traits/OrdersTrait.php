@@ -15,7 +15,7 @@ trait OrdersTrait
      * @param id $cart_id
      * @return array
      */
-    public function priceDetails($cart_id) //badest functioni have :()
+    public function priceDetails($cart_id, $checkOut = false) //badest functioni have :()
     {
         $cart = Cart::find($cart_id);
         $ress = [];
@@ -39,10 +39,13 @@ trait OrdersTrait
                     'price' => $price,
                     'afterDiscount' => $afterDiscount
                 ]);
-                $product->update([
-                    'quantities' => $product->quantities - $quantity //reduce quantity after checkout
+                if ($checkOut) {
+                    $afterCheckOut = ($product->quantities - $quantity);
+                    $product->update([
+                        'quantities' => $afterCheckOut //reduce quantity after checkout
 
-                ]);
+                    ]);
+                }
             }
         }
 
@@ -63,14 +66,13 @@ trait OrdersTrait
      */
     public function totalPrice($cart_id)
     {
-        $priceDetails = $this->priceDetails($cart_id);
+        $priceDetails = $this->priceDetails($cart_id, true);
         $total = 0;
         array_pop($priceDetails);
         //dd($priceDetails);
         $total = array_reduce($priceDetails, function ($acc, $val) {
             return $acc + $val['afterDiscount'];
-        }, $total);
-
+        }, 0);
         return $total;
     }
 

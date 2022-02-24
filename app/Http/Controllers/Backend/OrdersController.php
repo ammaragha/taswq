@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Http\Traits\CartsTrait;
 use App\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Session;
 
 class OrdersController extends Controller
 {
+    use CartsTrait;
 
     public function index()
     {
@@ -47,9 +49,11 @@ class OrdersController extends Controller
     public function refund($id)
     {
         try {
-            Order::find($id)->update([
+            $order = Order::find($id);
+            $order->update([
                 'status' => 'refunded'
             ]);
+            $this->refundCart($order->cart->id);
             Session::flash('k', 'refunded :)');
         } catch (\Exception $th) {
             Session::flash('err', 'Something wonrg!');
