@@ -17,7 +17,7 @@ class CreateOrdersTable extends Migration
             $table->bigIncrements('id');
             $table->date('start');
             $table->date('arrival');
-            $table->enum('status',['shipped','out']);
+            $table->enum('status',['ordered','shipped','delivered','refunded']);
             $table->double('discount')->nullable();
             $table->double('total_price');
             $table->timestamps();

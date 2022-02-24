@@ -2,6 +2,9 @@
 
 namespace App\Http\Traits\Api;
 
+use App\Address;
+use App\Cart;
+
 trait MapResponseTrait
 {
 
@@ -138,5 +141,40 @@ trait MapResponseTrait
             });
 
         return $all;
+    }
+
+
+    /**
+     * Mapping Orders
+     * @param App\Order $order
+     * @return array 
+     */
+    public function mapOrder($order)
+    {
+        //dd($order->cart_id);
+        $cart = Cart::find($order->cart_id);
+        $products = [];
+        $address = Address::find($order->address_id);
+        $address = $address->city . '/' . $address->street;
+        foreach ($cart->products as $product) {
+            array_push($products, [
+                'name' => $product->name,
+                'price' => $product->price,
+                'discount' => $product->discount . '%',
+                'quantity' => $product->item->quantity,
+            ]);
+        }
+
+        $ress = [
+            'Order_code' => rand(),
+            'status'=>$order->status,
+            'start' => $order->start,
+            'arrival' => $order->arrival,
+            'address' => $address,
+            'total_price' => $order->total_price,
+            'products' => $products,
+        ];
+
+        return $ress;
     }
 }

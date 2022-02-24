@@ -21,8 +21,13 @@ trait CartsTrait
     {
         $id = Auth::user()->id;
         $cart = Cart::where('user_id', $id)->where('status', 1)->latest()->first();
-        if (!$cart)
-            return false;
+        
+        if (!$cart) {
+            $cart = Cart::create([
+                'user_id' => $id,
+            ]);
+        }
+
         return $cart;
     }
 
@@ -61,7 +66,7 @@ trait CartsTrait
      */
     public function modifyPro($cart, $product, Request $request)
     {
-        $reset = $request->reset ? 0 : 1; //reset 
+        $reset = $request->reset == "true" ? 0 : 1; //reset 
         $proInCart = $this->proInCart($cart->id, $product->id);
         $newQ = ($reset * $proInCart->first()->quantity) +  $request->quantity; // if reset will add new Quantity if not will add new Q
         $proInCart->update([
@@ -71,7 +76,7 @@ trait CartsTrait
         return $proInCart;
     }
 
-   
+
 
 
     /**
@@ -88,19 +93,13 @@ trait CartsTrait
             $productQ = $product->quantities; //product quantity on store
             $newQ = $productQ - $cartQ; //new  quantity
 
-            if ($newQ < 0){
-                array_push($news,['msg'=> $product->name . "have no Quantity on store"]);
-                return ['status'=>false, 'news'=>$news];
+            if ($newQ < 0) {
+                array_push($news, ['msg' => $product->name . "have no Quantity on store"]);
+                return ['status' => false, 'news' => $news];
             }
 
             array_push($news, ['id' => $product->id, 'quantities' => $newQ]);
         }
         return true;
     }
-
-
-
-
-
-   
 }

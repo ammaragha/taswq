@@ -19,26 +19,7 @@ class CartController extends Controller
     use ResponseTrait, MapResponseTrait, PaginationTrait,CartsTrait;
 
 
-    /**
-     * create a new cart for user
-     * @return response
-     */
-    public function create(Request $request)
-    {
-        $id = Auth::user()->id;
-        try {
-            $cart = $this->getOpenCart(); // get last cart for user
-            if (!$cart) { // check if cart on hold or already complated 
-                $cart = Cart::create([
-                    'user_id' => $id,
-                ]);
-            }
-            $data = ['cart_id' => $cart->id]; //return  useable cart
-            return $this->succWithData($data, 'cart on hold');
-        } catch (\Exception $th) {
-            return $this->errMsg($th->getMessage());
-        }
-    }
+    
 
     public function add(Request $request)
     {

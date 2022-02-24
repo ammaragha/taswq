@@ -38,6 +38,10 @@ Route::group(['namespace'=>'Backend'],function ()
      * Orders
      */
     Route::get('/orders','OrdersController@index')->name('orders.index');
+    Route::get('/orders/{id}/shipped','OrdersController@ship')->name('orders.shipped');
+    Route::get('/orders/{id}/delivered','OrdersController@deliver')->name('orders.delivered');
+    Route::get('/orders/{id}/refund','OrdersController@refund')->name('orders.refund');
+
 
 
 });

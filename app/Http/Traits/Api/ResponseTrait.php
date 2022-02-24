@@ -44,4 +44,19 @@ trait ResponseTrait
             'data' => $data
         ], 200);
     }
+
+    /**
+     * when response is error msg with data
+     * @param array $data
+     * @param String $msg
+     * @return response
+     */
+    public function errWithData($data, $msg = null)
+    {
+        return response()->json([
+            'success' => false,
+            'message' => $msg,
+            'data' => $data
+        ], 401);
+    }
 }

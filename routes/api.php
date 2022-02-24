@@ -62,11 +62,12 @@ Route::group(['middleware' => ['json.response', 'api'], 'prefix' => 'v1', 'names
 
         //carts
         Route::get('cart/', 'CartController@view');
-        Route::post('cart/create', 'CartController@create');
         Route::post('cart/add', 'CartController@add');
         Route::post('cart/remove', 'CartController@remove');
 
         //orders
         Route::post('order', 'OrderController@order');
+        Route::post('order/show','OrderController@show');
+        Route::get('orders','OrderController@all');
     });
 });

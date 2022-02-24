@@ -1,8 +1,6 @@
 @extends('backend.layouts.app')
 
 @section('content')
-
-
     <h2 class="text-center mb-5">Show all Orders</h2>
     <div class="row m-3">
 
@@ -18,7 +16,8 @@
                         </span>
                     </div>
                     <input type="text" class="form-control " id="navbar-search-input" placeholder="Search now"
-                        aria-label="search" aria-describedby="search" name="search" value="@if (isset($_GET['search'])){{ $_GET['search'] }}@endif">
+                        aria-label="search" aria-describedby="search" name="search"
+                        value="@if (isset($_GET['search'])) {{ $_GET['search'] }} @endif">
                 </div>
             </form>
 
@@ -43,7 +42,6 @@
                             <tr>
                                 <th>#</th>
                                 <th>User</th>
-                                <th>Data</th>
                                 <th>Status</th>
                                 <th>Start</th>
                                 <th>Arrive</th>
@@ -54,29 +52,48 @@
                         <tbody>
                             @if (isset($data) && count($data) > 0)
                                 @foreach ($data as $key => $order)
-                                    <tr>
-                                        <td>{{ ++$key }}</td>
-                                        <td>{{$order->cart->user->first_name}}</td>
-                                        <td>{{ $order->created_at }}</td>
-                                        <td>{{ $order->status }}</td>
-                                        <td>{{ $order->start }}</td>
-                                        <td>{{ $order->arrival }}</td>
-                                        <td>{{ $order->total_price }}</td>
-                                        <td>
-                                            {{-- <form method="POST" action="{{ Route('categories.destroy', $cat->id) }}">
-                                                @csrf
-                                                @method('Delete')
-                                                <a href="{{ Route('categories.edit', $cat->id) }}"
-                                                    class="btn btn-sm btn-success ">
-                                                    <i class="ti-marker-alt"></i>
-                                                    Edit
-                                                </a>
-                                                <button class="btn btn-sm btn-danger confirm">
-                                                    <i class="ti-trash"></i>
-                                                    Delete
-                                                </button>
-                                            </form> --}}
-                                        </td>
+                                    @if ($order->status == 'ordered')
+                                        <tr class="table-danger">
+                                        @elseif($order->status == 'shipped')
+                                        <tr class="table-primary">
+                                        @else
+                                        <tr class="table-success">
+                                    @endif
+
+
+                                    <td>{{ ++$key }}</td>
+                                    <td>{{ $order->cart->user->first_name }}</td>
+                                    <td>{{ $order->status }}</td>
+                                    <td>{{ $order->start }}</td>
+                                    <td>{{ $order->arrival }}</td>
+                                    <td>{{ $order->total_price }}</td>
+                                    <td>
+
+                                        @if ($order->status == 'ordered')
+                                            <a href="{{ Route('orders.shipped', $order->id) }}"
+                                                class="btn btn-sm btn-primary confirm">
+                                                <i class="ti-anchor"></i>
+                                                Shipped
+                                            </a>
+                                        @endif
+
+                                        @if ($order->status == 'shipped')
+                                            <a href="{{ Route('orders.delivered', $order->id) }}"
+                                                class="btn btn-sm btn-success confirm">
+                                                <i class="ti-shopping-cart"></i>
+                                                Delivered
+                                            </a>
+                                        @endif
+
+                                        @if ($order->status != 'delivered')
+                                            <a href="{{ Route('orders.refund', $order->id) }}"
+                                                class="btn btn-sm btn-danger confirm">
+                                                <i class="ti-back-right"></i>
+                                                Refund
+                                            </a>
+                                        @endif
+
+                                    </td>
                                     </tr>
                                 @endforeach
                             @else
@@ -91,4 +108,5 @@
         </div>
     </div>
     {{-- end table --}}
+    @include('backend.unique.paginationLinks')
 @endsection
